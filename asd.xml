@@ -1,0 +1,41 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<property1>this is a text property"</property1>
+		<sourceFolderProperty>items</sourceFolderProperty>
+		<destinationFolderProperty>Destination</destinationFolderProperty>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<AllItem Include="$(sourceFolderProperty)/*.*" />
+		<TextItem Include="$(sourceFolderProperty)/*.txt" />
+		<JsItem Include="$(sourceFolderProperty)/*.js" />
+		<TextAndJsItem Include="$(sourceFolderProperty)/*.js" />
+		<TextAndJsItem Include="$(sourceFolderProperty)/*.txt" />
+	</ItemGroup>
+	
+	
+	<Target Name="OutputTextAndProperty">
+		<Message Text="MESSAGE: $(property1)" />
+		<Message Text="low message" Importance="low"/>
+        <Message Text="normal message" Importance="normal"/>
+        <Message Text="high message" Importance="high"/>
+        <Warning Text="warning"/>
+        <!--<Error Text="error"/>-->
+	</Target>
+	
+	<Target Name="OutputItemText">
+		<Message Text="outputting Text item names:@(TextItem)" />
+		<Message Text="outputting Js item names:@(JsItem)" />
+		<Message Text="outputting All item names:@(AllItem)" />
+		<Message Text="outputting Text and Js item names:@(TextAndJsItem)" />
+	</Target>
+	
+	<Target Name="MakeDirAndCopyAll">
+		<Message Text="Making '$(destinationFolderProperty)' Folder" />
+		<MakeDir Directories = "$(destinationFolderProperty)" />
+		<Message Text="Copying All Files to '$(destinationFolderProperty)' Folder" />
+		<Copy SourceFiles = "@(AllItem)" DestinationFolder = "$(destinationFolderProperty)" />
+	</Target>
+</Project>
+
+<!--http://www.universalthread.com/ViewPageArticle.aspx?ID=61-->
