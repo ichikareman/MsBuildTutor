@@ -36,6 +36,47 @@
 		<Message Text="Copying All Files to '$(destinationFolderProperty)' Folder" />
 		<Copy SourceFiles = "@(AllItem)" DestinationFolder = "$(destinationFolderProperty)" />
 	</Target>
+	
+	<!--Real Build-->
+	<PropertyGroup>
+		<AssemblyName>MyApp.exe</AssemblyName>
+		<Configuration Condition="$(Configuration) == ''">Release</Configuration>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="$(Configuration) == 'Debug'">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<OutputPath>Bin/Debug</OutputPath>
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="$(Configuration) == 'Release'">
+		<DebugSymbols>false</DebugSymbols>
+		<DebugType />
+		<OutputPath>Bin/Release</OutputPath>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<Compile Include="MyApp.cs" />
+	</ItemGroup>
+	
+	<Target Name="Clean">
+		<RemoveDir Directories="$(Outputpath)" />
+	</Target>
+
+	<Target Name="Build">
+		<MakeDir Condition="!Exists($(OutputPath))" Directories="$(Outputpath)" />
+		
+		<Csc Sources="@(Compile)" 
+			OutputAssembly="$(OutputPath)/$(AssemblyName)" 
+			EmitDebugInformation="$(DebugSymbols)" 
+			DebugType="$(DebugType)" 
+		/>
+	</Target>	
+
+	<Target Name="ReBuild" DependsOnTargets="Clean;Build">
+	</Target>	
+		
 </Project>
 
 <!--http://www.universalthread.com/ViewPageArticle.aspx?ID=61-->
+<!--To build while providing property:  MSBuild.exe MyProj.proj /p:Configuration=Debug-->
